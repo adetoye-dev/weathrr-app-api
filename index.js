@@ -1,10 +1,13 @@
 import express from "express";
-const app = express();
-app.use(express.json());
+import cors from "cors";
+import userRoutes from "./routes/users.js";
 
-app.get("/", (req, res) => {
-  res.json("Hello, from backend");
-});
+const app = express();
+
+app.use(express.json());
+app.use(cors());
+
+app.use("/api/users", userRoutes);
 
 const port = process.env.PORT || 3000;
 
