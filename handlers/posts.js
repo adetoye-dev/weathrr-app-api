@@ -59,10 +59,9 @@ export const addPost = (req, res) => {
   jwt.verify(token, "secretkey", (err, data) => {
     if (err) return res.status(403).json("Invalid Token");
     const q =
-      "INSERT INTO posts (`title`, `desc`, `img`, `userId`, `city`, `temp`, `createdAt`) VALUES (?)";
+      "INSERT INTO posts (`desc`, `img`, `userId`, `city`, `temp`, `createdAt`) VALUES (?)";
 
     const values = [
-      req.body.title,
       req.body.desc,
       req.body.img,
       data.id,
