@@ -4,7 +4,7 @@ import cors from "cors";
 import userRoutes from "./routes/users.js";
 import authRoutes from "./routes/auth.js";
 import postRoutes from "./routes/posts.js";
-
+import fileUpload from "express-fileupload";
 const app = express();
 
 app.use((req, res, next) => {
@@ -12,7 +12,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(fileUpload());
+
 app.use(express.json());
+
 app.use(
   cors({
     origin: "http://localhost:5173",
