@@ -1,6 +1,10 @@
 import { db } from "../connection.js";
 import jwt from "jsonwebtoken";
 import moment from "moment/moment.js";
+import axios from "axios";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const getPosts = (req, res) => {
   const token = req.cookies.accessToken;
@@ -58,20 +62,38 @@ export const addPost = (req, res) => {
 
   jwt.verify(token, "secretkey", (err, data) => {
     if (err) return res.status(403).json("Invalid Token");
-    const q =
-      "INSERT INTO posts (`desc`, `img`, `userId`, `city`, `temp`, `createdAt`) VALUES (?)";
+    console.log({ ...req.body }, req.files.img);
+    savePost();
 
-    const values = [
-      req.body.desc,
-      req.body.img,
-      data.id,
-      req.body.city,
-      req.body.temp,
-      moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
-    ];
-    db.query(q, [values], (err, data) => {
-      if (err) return res.status(500).json(err);
-      return res.status(200).json("Post Created Successfully!!");
-    });
+    async function savePost() {
+      await axios
+        .post(
+          "https://www.filestackapi.com/api/store/S3?key=" +
+            process.env.FILESTACK_API_KEY,
+          req.files.img.data,
+          {
+            headers: {
+              "Content-Type": "image/png",
+            },
+          }
+        )
+        .then((res) => res.data)
+        .then((img) => {
+          const q =
+            "INSERT INTO posts (`desc`, `img`, `userId`, `city`, `temp`, `createdAt`) VALUES (?)";
+          const values = [
+            req.body.desc,
+            img.url,
+            data.id,
+            req.body.city,
+            req.body.temp,
+            moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+          ];
+          db.query(q, [values], (err, data) => {
+            if (err) return res.status(500).json(err);
+            return res.status(200).json("Post Created Successfully!!");
+          });
+        });
+    }
   });
 };
