@@ -12,21 +12,11 @@ export const getPosts = (req, res) => {
 
   jwt.verify(token, "secretkey", (err, data) => {
     if (err) return res.status(403).json("Invalid Token");
-    const q = `SELECT p.*, u.id AS userId, name AS userName, profilePic FROM posts AS p JOIN users AS u ON (u.id = p.userId)`;
+    const q = `SELECT p.*, u.id AS userId, name AS userName, profilePic FROM posts AS p JOIN users AS u ON (u.id = p.userId) ORDER BY p.createdAt DESC`;
     db.query(q, [data.id], (err, data) => {
       if (err) return res.status(500).json(err);
       return res.status(200).json(data);
     });
-  });
-};
-
-export const getSavedPosts = (req, res) => {
-  const userId = req.params.userId;
-
-  const q = `SELECT p.*, u.id AS userId, name AS userName, profilePic FROM posts AS p JOIN users AS u ON (u.id = p.userId) JOIN bookmarks AS b ON (p.id = b.postId) WHERE b.userId = ?`;
-  db.query(q, [userId], (err, data) => {
-    if (err) return res.status(500).json(err);
-    return res.status(200).json(data);
   });
 };
 
