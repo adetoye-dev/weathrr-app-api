@@ -4,7 +4,8 @@ import cors from "cors";
 import userRoutes from "./routes/users.js";
 import authRoutes from "./routes/auth.js";
 import postRoutes from "./routes/posts.js";
-import bookmarkRouts from "./routes/bookmarks.js";
+import bookmarkRoutes from "./routes/bookmarks.js";
+import relationshipRoutes from "./routes/relationships.js";
 import fileUpload from "express-fileupload";
 const app = express();
 
@@ -27,7 +28,8 @@ app.use(cookieParser());
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
-app.use("/api/bookmarks", bookmarkRouts);
+app.use("/api/bookmarks", bookmarkRoutes);
+app.use("/api/relationships", relationshipRoutes);
 
 const port = process.env.PORT || 3000;
 
