@@ -1,6 +1,9 @@
 import { db } from "../connection.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const register = (req, res) => {
   //CHECK IF USER ALREADY EXISTS
@@ -48,6 +51,8 @@ export const login = (req, res) => {
     res
       .cookie("accessToken", token, {
         httpOnly: true,
+        sameSite: process.env.ENVIRONMENT === "development" ? true : "none",
+        secure: process.env.ENVIRONMENT === "development" ? false : true,
       })
       .status(200)
       .json(others);
