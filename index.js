@@ -7,7 +7,10 @@ import postRoutes from "./routes/posts.js";
 import bookmarkRoutes from "./routes/bookmarks.js";
 import relationshipRoutes from "./routes/relationships.js";
 import fileUpload from "express-fileupload";
+import dotenv from "dotenv";
 const app = express();
+
+dotenv.config();
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Credentials", true);
@@ -20,7 +23,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "https://weathrr-app.vercel.app",
+    origin: process.env.CLIENT_URL,
   })
 );
 app.use(cookieParser());
