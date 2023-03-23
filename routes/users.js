@@ -1,9 +1,9 @@
 import express from "express";
-import { getUsers, getUser } from "../handlers/users.js";
+import { getUser, updateUser } from "../handlers/users.js";
 
 const router = express.Router();
 
-router.get("/", getUsers);
 router.get("/:userId", getUser);
+router.put("/", updateUser);
 
 export default router;
