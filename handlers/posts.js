@@ -35,6 +35,16 @@ export const getRecommendedPosts = (req, res) => {
   );
 };
 
+//Get posts recommended based on your weather and country
+export const getNearbyPosts = (req, res) => {
+  const q = `SELECT p.*, u.id AS userId, name AS userName, profilePic FROM posts AS p JOIN users AS u ON (u.id = p.userId) WHERE (p.country = ?) ORDER BY p.createdAt DESC`;
+
+  db.query(q, [req.body.country], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
 //Get posts from a specific user
 export const getUserPosts = (req, res) => {
   const userId = req.params.userId;
