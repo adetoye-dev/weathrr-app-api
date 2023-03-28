@@ -5,6 +5,7 @@ import userRoutes from "./routes/users.js";
 import authRoutes from "./routes/auth.js";
 import postRoutes from "./routes/posts.js";
 import bookmarkRoutes from "./routes/bookmarks.js";
+import uploadRoutes from "./routes/uploads.js";
 import relationshipRoutes from "./routes/relationships.js";
 import fileUpload from "express-fileupload";
 import dotenv from "dotenv";
@@ -34,6 +35,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/bookmarks", bookmarkRoutes);
 app.use("/api/relationships", relationshipRoutes);
+app.use("/api/uploads", uploadRoutes);
 
 const port = process.env.PORT || 3000;
 
