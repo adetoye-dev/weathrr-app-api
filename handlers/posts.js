@@ -80,38 +80,23 @@ export const addPost = (req, res) => {
 
   jwt.verify(token, "secretkey", (err, data) => {
     if (err) return res.status(403).json("Invalid Token");
-    console.log({ ...req.body }, req.files.img);
-    savePost();
+    console.log({ ...req.body });
 
-    async function savePost() {
-      await axios
-        .post(
-          "https://www.filestackapi.com/api/store/S3?key=" +
-            process.env.FILESTACK_API_KEY,
-          req.files.img.data,
-          {
-            headers: {
-              "Content-Type": "image/png",
-            },
-          }
-        )
-        .then((res) => res.data)
-        .then((img) => {
-          const q =
-            "INSERT INTO posts (`desc`, `img`, `userId`, `city`, `temp`, `createdAt`) VALUES (?)";
-          const values = [
-            req.body.desc,
-            img.url,
-            data.id,
-            req.body.city,
-            req.body.temp,
-            moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
-          ];
-          db.query(q, [values], (err, data) => {
-            if (err) return res.status(500).json(err);
-            return res.status(200).json("Post Created Successfully!!");
-          });
-        });
-    }
+    const q =
+      "INSERT INTO posts (`desc`, `imgId`, `imgUrl`, `userId`, `city`, `country`,  `weather`, `createdAt`) VALUES (?)";
+    const values = [
+      req.body.desc,
+      req.body.img.id,
+      req.body.img.url,
+      data.id,
+      req.body.city,
+      req.body.country,
+      req.body.weather,
+      moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+    ];
+    db.query(q, [values], (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.status(200).json("Post Created Successfully!!");
+    });
   });
 };
