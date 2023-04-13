@@ -10,7 +10,7 @@ export const register = (req, res) => {
   const q = "SELECT * FROM `users` where username = ?";
   db.query(q, [req.body.username], (err, data) => {
     if (err) return res.status(500).json(err);
-    if (data.length) return res.status(409).json("User already exists");
+    if (data.length) return res.status(409).json("Username already taken!");
 
     //CREATE NEW USER
     const salt = bcrypt.genSaltSync(10);
@@ -24,7 +24,7 @@ export const register = (req, res) => {
     ];
     db.query(q, [values], (err, data) => {
       if (err) return res.status(500).json(err);
-      return res.status(200).json("User created successfully");
+      return res.status(200).json("SignUp Was Successful! Proceed to login!");
     });
   });
 };
