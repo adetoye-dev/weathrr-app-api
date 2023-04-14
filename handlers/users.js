@@ -20,7 +20,7 @@ export const updateUser = (req, res) => {
     if (err) return res.status(403).json("Invalid Token");
 
     const q =
-      "UPDATE users SET `name` = ?, `profilePic` = ?, `picId` = ?, `city` = ?, `about` = ? WHERE (id = ?)";
+      "UPDATE `users` SET `name` = ?, `profilePic` = ?, `picId` = ?, `city` = ?, `about` = ? WHERE (id = ?)";
     const values = [
       req.body.name,
       req.body.img.url,
