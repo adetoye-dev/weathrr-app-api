@@ -9,6 +9,7 @@ import uploadRoutes from "./routes/uploads.js";
 import relationshipRoutes from "./routes/relationships.js";
 import fileUpload from "express-fileupload";
 import dotenv from "dotenv";
+import "./config/passport-config.js";
 const app = express();
 
 dotenv.config();
