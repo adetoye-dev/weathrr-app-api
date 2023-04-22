@@ -15,6 +15,30 @@ passport.use(
     (request, accessToken, refreshToken, profile, done) => {
       console.log("Yay! You made it to the callbacks.");
       console.log(profile);
+
+      //CHECK IF USER ALREADY EXISTS
+      const q = "SELECT * FROM `google_users` where googleId = ?";
+      db.query(q, [profile.id], (err, data) => {
+        // if (err) return res.status(500).json(err);
+        if (err) return console.log(err);
+        if (data.length) return console.log("User already exists!");
+
+        console.log("This is a new user");
+        //CREATE NEW USER
+        const q =
+          "INSERT INTO `google_users` (googleId, name, email, profilePic, channel) VALUES (?)";
+        const values = [
+          profile.id,
+          profile.displayName,
+          profile.email,
+          profile.picture,
+          profile.provider,
+        ];
+        db.query(q, [values], (err, data) => {
+          if (err) return res.status(500).json(err);
+          console.log("Created new user:", values);
+        });
+      });
     }
   )
 );
