@@ -7,17 +7,18 @@ const router = express.Router();
 router.post("/register", register);
 router.post("/login", login);
 router.post("/logout", logout);
+
 router.get("/google", passport.authenticate("google"));
 router.get(
   "/google/callback",
-  passport.authenticate("google"),
-  (req, res) => {
-    res.send("Hello, you made it to the callback");
-  }
-  // passport.authenticate("google", {
-  //   successReturnToOrRedirect: "http://localhost:3000/hello",
-  //   failureRedirect: "http://localhost:3000/",
-  // })
+  passport.authenticate("google", {
+    successRedirect: process.env.CLIENT_URL,
+    failureRedirect: process.env.CLIENT_URL + "/login",
+  })
 );
+router.get("/google/logout", (req, res) => {
+  req.logout();
+  res.redirect(process.env.CLIENT_URL + "/login");
+});
 
 export default router;
