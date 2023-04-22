@@ -1,5 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
+import cookieSession from "cookie-session";
 import cors from "cors";
 import userRoutes from "./routes/users.js";
 import authRoutes from "./routes/auth.js";
@@ -9,6 +10,7 @@ import uploadRoutes from "./routes/uploads.js";
 import relationshipRoutes from "./routes/relationships.js";
 import fileUpload from "express-fileupload";
 import dotenv from "dotenv";
+import passport from "passport";
 import "./config/passport-config.js";
 const app = express();
 
@@ -30,6 +32,18 @@ app.use(
   })
 );
 app.use(cookieParser());
+
+// setup cookie session
+app.use(
+  cookieSession({
+    maxAge: 24 * 60 * 60 * 1000,
+    keys: [process.env.COOKIE_KEY],
+  })
+);
+
+// initialize passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
