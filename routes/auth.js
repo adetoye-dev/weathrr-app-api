@@ -21,4 +21,15 @@ router.get("/google/logout", (req, res) => {
   res.redirect(process.env.CLIENT_URL + "/login");
 });
 
+router.get("/validate", (req, res) => {
+  if (req.user) {
+    res.status(200).json({
+      success: true,
+      message: "successful",
+      user: req.user,
+      //   cookies: req.cookies
+    });
+  }
+});
+
 export default router;
