@@ -13,7 +13,7 @@ export const getUser = (req, res) => {
 };
 
 export const updateUser = (req, res) => {
-  const token = req.cookies.accessToken;
+  const token = req.header("Authorization")?.split(" ")[1] || "";
   if (!token) return res.status(401).json("User not logged in");
 
   jwt.verify(token, "secretkey", (err, data) => {

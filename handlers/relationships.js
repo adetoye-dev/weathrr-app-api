@@ -24,7 +24,7 @@ export const getUserFollowings = (req, res) => {
 export const addRelationship = (req, res) => {
   const userId = req.body.userId;
 
-  const token = req.cookies.accessToken;
+  const token = req.header("Authorization")?.split(" ")[1] || "";
   if (!token) return res.status(401).json("User not logged in");
 
   jwt.verify(token, "secretkey", (err, data) => {
@@ -43,7 +43,7 @@ export const addRelationship = (req, res) => {
 export const deleteRelationship = (req, res) => {
   const userId = req.query.userId;
 
-  const token = req.cookies.accessToken;
+  const token = req.header("Authorization")?.split(" ")[1] || "";
   if (!token) return res.status(401).json("User not logged in");
 
   jwt.verify(token, "secretkey", (err, data) => {
