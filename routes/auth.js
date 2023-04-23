@@ -1,5 +1,5 @@
 import express from "express";
-import { register, login, logout } from "../handlers/auth.js";
+import { register, login, logout, tokenRefresh } from "../handlers/auth.js";
 import passport from "passport";
 
 const router = express.Router();
@@ -7,6 +7,8 @@ const router = express.Router();
 router.post("/register", register);
 router.post("/login", login);
 router.get("/logout", logout);
+
+router.post("/refresh", tokenRefresh);
 
 router.get("/google", passport.authenticate("google"));
 router.get(
