@@ -1,5 +1,11 @@
 import express from "express";
-import { register, login, logout, tokenRefresh } from "../handlers/auth.js";
+import {
+  register,
+  login,
+  logout,
+  tokenRefresh,
+  validateAuth,
+} from "../handlers/auth.js";
 import passport from "passport";
 
 const router = express.Router();
@@ -23,15 +29,6 @@ router.get("/google/logout", (req, res) => {
   res.redirect(process.env.CLIENT_URL + "/login");
 });
 
-router.get("/validate", (req, res) => {
-  if (req.user) {
-    res.status(200).json({
-      success: true,
-      message: "successful",
-      user: req.user,
-      //   cookies: req.cookies
-    });
-  }
-});
+router.post("/validate", validateAuth);
 
 export default router;
