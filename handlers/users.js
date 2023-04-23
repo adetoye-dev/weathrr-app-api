@@ -14,24 +14,41 @@ export const getUser = (req, res) => {
 
 export const updateUser = (req, res) => {
   const token = req.header("Authorization")?.split(" ")[1] || "";
-  if (!token) return res.status(401).json("User not logged in");
+  if (!token && !req.user) return res.status(401).json("User not logged in");
 
-  jwt.verify(token, "secretkey", (err, data) => {
-    if (err) return res.status(403).json("Invalid Token");
-
+  if (req.user) {
     const q =
-      "UPDATE `users` SET `name` = ?, `profilePic` = ?, `picId` = ?, `city` = ?, `about` = ? WHERE (id = ?)";
+      "UPDATE `google_users` SET `name` = ?, `profilePic` = ?, `picId` = ?, `city` = ?, `about` = ? WHERE (id = ?)";
     const values = [
       req.body.name,
       req.body.img.url,
       req.body.img.id,
       req.body.city,
       req.body.about,
-      data.id,
+      req.user.id,
     ];
     db.query(q, [...values], (err, data) => {
       if (err) return res.status(500).json(err);
       return res.status(200).json("Profile Updated Successfully!!");
     });
-  });
+  } else {
+    jwt.verify(token, "secretkey", (err, data) => {
+      if (err) return res.status(403).json("Invalid Token");
+
+      const q =
+        "UPDATE `users` SET `name` = ?, `profilePic` = ?, `picId` = ?, `city` = ?, `about` = ? WHERE (id = ?)";
+      const values = [
+        req.body.name,
+        req.body.img.url,
+        req.body.img.id,
+        req.body.city,
+        req.body.about,
+        data.id,
+      ];
+      db.query(q, [...values], (err, data) => {
+        if (err) return res.status(500).json(err);
+        return res.status(200).json("Profile Updated Successfully!!");
+      });
+    });
+  }
 };
