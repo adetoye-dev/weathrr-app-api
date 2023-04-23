@@ -48,24 +48,30 @@ export const login = (req, res) => {
     //LOGIN
     const { password, ...others } = data[0];
 
-    const token = jwt.sign({ id: data[0].id }, "secretkey");
-    res
-      .cookie("accessToken", token, {
-        httpOnly: true,
-        sameSite: process.env.ENVIRONMENT === "development" ? true : "none",
-        secure: process.env.ENVIRONMENT === "development" ? false : true,
-      })
-      .status(200)
-      .json(others);
+    const refreshToken = jwt.sign({ id: data[0].id }, "refresh_key", {
+      expiresIn: "1w",
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
+      sameSite: process.env.ENVIRONMENT === "development" ? true : "none",
+      secure: process.env.ENVIRONMENT === "development" ? false : true,
+    });
+
+    const token = jwt.sign({ id: data[0].id }, "secretkey", {
+      expiresIn: "60s",
+    });
+    res.status(200).send({
+      token,
+      user: others,
+    });
   });
 };
 
 export const logout = (req, res) => {
   res
-    .clearCookie("accessToken", {
-      secure: true,
-      sameSite: "none",
-    })
+    .cookie("refreshToken", "", { maxAge: 0 })
     .status(200)
     .redirect(process.env.CLIENT_URL + "/login");
 };
