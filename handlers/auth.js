@@ -69,6 +69,47 @@ export const login = (req, res) => {
   });
 };
 
+export const validateAuth = async (req, res) => {
+  console.log("called validate Auth");
+  if (req.user) {
+    res.status(200).json({
+      success: true,
+      message: "successful",
+      user: req.user,
+    });
+  } else {
+    try {
+      const accessToken = req.header("Authorization")?.split(" ")[1] || "";
+
+      const payload = jwt.verify(accessToken, "secretkey");
+
+      if (!payload) return res.status(401).json("unauthenticated");
+
+      jwt.verify(accessToken, "secretkey", (err, data) => {
+        if (err) return res.status(403).json("Invalid Token");
+        const q = "SELECT * FROM `users` where id = ?";
+        db.query(q, [data.id], (err, data) => {
+          if (err) return res.status(500).json(err);
+          if (data.length === 0) return res.status(404).json("User not found");
+
+          //SEND BACK VALID USER
+          const { password, ...others } = data[0];
+          res.status(200).json({
+            success: true,
+            message: "successful",
+            user: others,
+            //   cookies: req.cookies
+          });
+        });
+      });
+    } catch (err) {
+      return res.status(401).send({
+        message: "unauthenticated",
+      });
+    }
+  }
+};
+
 export const tokenRefresh = async (req, res) => {
   console.log("tokenRefresh was called");
   try {
