@@ -69,6 +69,36 @@ export const login = (req, res) => {
   });
 };
 
+export const tokenRefresh = async (req, res) => {
+  console.log("tokenRefresh was called");
+  try {
+    const refreshToken = req.cookies["refreshToken"];
+    const payload = jwt.verify(refreshToken, "refresh_key");
+
+    if (!payload) {
+      return res.status(401).send({
+        message: "unauthenticated",
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        id: payload.id,
+      },
+      "secretkey",
+      { expiresIn: "60s" }
+    );
+
+    res.status(200).send({
+      token,
+    });
+  } catch (e) {
+    return res.status(401).send({
+      message: "unauthenticated",
+    });
+  }
+};
+
 export const logout = (req, res) => {
   res
     .cookie("refreshToken", "", { maxAge: 0 })
