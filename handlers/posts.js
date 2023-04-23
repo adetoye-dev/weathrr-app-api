@@ -1,14 +1,13 @@
 import { db } from "../connection.js";
 import jwt from "jsonwebtoken";
 import moment from "moment/moment.js";
-import axios from "axios";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 //show All Posts from all Users
 export const getPosts = (req, res) => {
-  const token = req.cookies.accessToken;
+  const token = req.header("Authorization")?.split(" ")[1] || "";
   if (!token) return res.status(401).json("User not logged in");
 
   jwt.verify(token, "secretkey", (err, data) => {
@@ -59,7 +58,7 @@ export const getUserPosts = (req, res) => {
 
 //Get posts only from users you're following
 export const getFollowedUsersPosts = (req, res) => {
-  const token = req.cookies.accessToken;
+  const token = req.header("Authorization")?.split(" ")[1] || "";
   if (!token) return res.status(401).json("User not logged in");
 
   jwt.verify(token, "secretkey", (err, data) => {
@@ -75,7 +74,7 @@ export const getFollowedUsersPosts = (req, res) => {
 
 //Add new post to db
 export const addPost = (req, res) => {
-  const token = req.cookies.accessToken;
+  const token = req.header("Authorization")?.split(" ")[1] || "";
   if (!token) return res.status(401).json("User not logged in");
 
   jwt.verify(token, "secretkey", (err, data) => {

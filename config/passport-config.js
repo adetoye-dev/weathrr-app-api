@@ -22,7 +22,6 @@ passport.use(
         if (err) return console.log(err);
         if (data.length) {
           const { ...user } = data[0];
-          console.log("User already exists:", user);
           return done(null, user);
         }
 
@@ -44,8 +43,7 @@ passport.use(
             if (err) return res.status(500).json(err);
             // return res.status(200).json(data);
             const { ...user } = data[0];
-            console.log("Created new user: ", user);
-            return done(null, data);
+            return done(null, user);
           });
         });
       });

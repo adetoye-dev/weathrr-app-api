@@ -2,7 +2,7 @@ import { db } from "../connection.js";
 import jwt from "jsonwebtoken";
 
 export const getSavedPosts = (req, res) => {
-  const token = req.cookies.accessToken;
+  const token = req.header("Authorization")?.split(" ")[1] || "";
   if (!token) return res.status(401).json("User not logged in");
 
   jwt.verify(token, "secretkey", (err, data) => {
@@ -28,7 +28,7 @@ export const getFavorites = (req, res) => {
 export const addFavorite = (req, res) => {
   const postId = req.body.postId;
 
-  const token = req.cookies.accessToken;
+  const token = req.header("Authorization")?.split(" ")[1] || "";
   if (!token) return res.status(401).json("User not logged in");
 
   jwt.verify(token, "secretkey", (err, data) => {
@@ -46,7 +46,7 @@ export const addFavorite = (req, res) => {
 export const deleteFavorite = (req, res) => {
   const postId = req.query.postId;
 
-  const token = req.cookies.accessToken;
+  const token = req.header("Authorization")?.split(" ")[1] || "";
   if (!token) return res.status(401).json("User not logged in");
 
   jwt.verify(token, "secretkey", (err, data) => {
