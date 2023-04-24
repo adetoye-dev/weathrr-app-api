@@ -3,12 +3,23 @@ import jwt from "jsonwebtoken";
 
 export const getUser = (req, res) => {
   const userId = req.params.userId;
+  const userChannel = userId.split("_")[0];
 
-  const q = `SELECT id , name , profilePic, city, about FROM users  
-      WHERE (id = ?)`;
+  let table = "";
+  if (userChannel === "google") {
+    console.log("google table ran");
+    table = "google_users";
+  } else {
+    console.log("native table ran");
+    table = "users";
+  }
+
+  const q = `SELECT name , profilePic, city, about, userId FROM ${table}  
+  WHERE (userId = ?)`;
+
   db.query(q, [userId], (err, data) => {
     if (err) return res.status(500).json(err);
-    return res.status(200).json(data);
+    return res.status(200).json(data[0]);
   });
 };
 
