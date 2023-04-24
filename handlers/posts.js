@@ -95,14 +95,14 @@ export const addPost = (req, res) => {
   if (!token && !req.user) return res.status(401).json("User not logged in");
 
   const q =
-    "INSERT INTO posts (`desc`, `imgId`, `imgUrl`, `userId`, `city`, `country`,  `weather`, `createdAt`) VALUES (?)";
+    "INSERT INTO posts (`desc`, `imgId`, `imgUrl`, `creatorId`, `city`, `country`,  `weather`, `createdAt`) VALUES (?)";
 
   if (req.user) {
     const values = [
       req.body.desc,
       req.body.img.id,
       req.body.img.url,
-      req.user.id,
+      req.user.userId,
       req.body.city,
       req.body.country,
       req.body.weather,
