@@ -29,7 +29,7 @@ export const getPosts = (req, res) => {
   const token = req.header("Authorization")?.split(" ")[1] || "";
   if (!token && !req.user) return res.status(401).json("User not logged in");
 
-  const q = `SELECT p.*, u.id AS userId, name AS userName, profilePic FROM posts AS p JOIN users AS u ON (u.id = p.userId) ORDER BY p.createdAt DESC`;
+  const q = `SELECT * FROM posts ORDER BY createdAt DESC`;
 
   if (req.user) {
     db.query(q, [req.user.id], (err, data) => {
@@ -49,7 +49,7 @@ export const getPosts = (req, res) => {
 
 //Get posts recommended based on your weather and country
 export const getRecommendedPosts = (req, res) => {
-  const q = `SELECT p.*, u.id AS userId, name AS userName, profilePic FROM posts AS p JOIN users AS u ON (u.id = p.userId) WHERE (p.weather = ? AND p.city = ? AND p.country = ?) ORDER BY p.createdAt DESC`;
+  const q = `SELECT * FROM posts WHERE (weather = ? AND city = ? AND country = ?) ORDER BY createdAt DESC`;
 
   db.query(
     q,
@@ -63,7 +63,7 @@ export const getRecommendedPosts = (req, res) => {
 
 //Get posts recommended based on your weather and country
 export const getNearbyPosts = (req, res) => {
-  const q = `SELECT p.*, u.id AS userId, name AS userName, profilePic FROM posts AS p JOIN users AS u ON (u.id = p.userId) WHERE (p.country = ?) ORDER BY p.createdAt DESC`;
+  const q = `SELECT * FROM posts WHERE (country = ?) ORDER BY createdAt DESC`;
 
   db.query(q, [req.body.country], (err, data) => {
     if (err) return res.status(500).json(err);
@@ -75,8 +75,7 @@ export const getNearbyPosts = (req, res) => {
 export const getUserPosts = (req, res) => {
   const userId = req.params.userId;
 
-  const q = `SELECT p.*, u.id AS userId, name AS userName, profilePic FROM posts AS p JOIN users AS u ON (u.id = p.userId) 
-      WHERE (p.userId = ?)`;
+  const q = `SELECT * FROM posts WHERE (creatorId = ?)`;
   db.query(q, [userId], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
@@ -88,11 +87,11 @@ export const getFollowedUsersPosts = (req, res) => {
   const token = req.header("Authorization")?.split(" ")[1] || "";
   if (!token && !req.user) return res.status(401).json("User not logged in");
 
-  const q = `SELECT p.*, u.id AS userId, name AS userName, profilePic FROM posts AS p JOIN users AS u ON (u.id = p.userId) 
-      JOIN relationships AS r ON (p.userId = r.followedUserId) WHERE r.followerUserId = ?`;
+  const q = `SELECT p.* FROM posts AS p 
+      JOIN relationships AS r ON (p.creatorId = r.followedUserId) WHERE r.followerUserId = ?`;
 
   if (req.user) {
-    db.query(q, [req.user.id], (err, data) => {
+    db.query(q, [req.user.userId], (err, data) => {
       if (err) return res.status(500).json(err);
       return res.status(200).json(data);
     });
