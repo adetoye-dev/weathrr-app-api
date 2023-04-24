@@ -54,7 +54,7 @@ export const login = (req, res) => {
     //LOGIN
     const { password, ...others } = data[0];
 
-    const refreshToken = jwt.sign({ id: data[0].id }, "refresh_key", {
+    const refreshToken = jwt.sign({ id: data[0].userId }, "refresh_key", {
       expiresIn: "1w",
     });
 
@@ -65,7 +65,7 @@ export const login = (req, res) => {
       secure: process.env.ENVIRONMENT === "development" ? false : true,
     });
 
-    const token = jwt.sign({ id: data[0].id }, "secretkey", {
+    const token = jwt.sign({ id: data[0].userId }, "secretkey", {
       expiresIn: "60s",
     });
     res.status(200).send({
