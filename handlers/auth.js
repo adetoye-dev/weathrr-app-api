@@ -93,7 +93,7 @@ export const validateAuth = async (req, res) => {
 
       jwt.verify(accessToken, "secretkey", (err, data) => {
         if (err) return res.status(403).json("Invalid Token");
-        const q = "SELECT * FROM `users` where id = ?";
+        const q = "SELECT * FROM `users` where userId = ?";
         db.query(q, [data.id], (err, data) => {
           if (err) return res.status(500).json(err);
           if (data.length === 0) return res.status(404).json("User not found");
