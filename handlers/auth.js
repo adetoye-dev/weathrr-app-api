@@ -2,6 +2,7 @@ import { db } from "../connection.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { v4 as uuidv4 } from "uuid";
 
 dotenv.config();
 
@@ -15,13 +16,18 @@ export const register = (req, res) => {
     //CREATE NEW USER
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(req.body.password, salt);
+
+    const uuid = uuidv4();
+    const userId = `native_${uuid}`; // create signed user id
+
     const q =
-      "INSERT INTO `users` (username, email, password, name) VALUES (?)";
+      "INSERT INTO `users` (username, email, password, name, userId) VALUES (?)";
     const values = [
       req.body.username,
       req.body.email,
       hashedPassword,
       req.body.name,
+      userId,
     ];
     db.query(q, [values], (err, data) => {
       if (err) return res.status(500).json(err);
