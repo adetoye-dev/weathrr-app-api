@@ -32,7 +32,7 @@ export const getPosts = (req, res) => {
   const q = `SELECT * FROM posts ORDER BY createdAt DESC`;
 
   if (req.user) {
-    db.query(q, [req.user.id], (err, data) => {
+    db.query(q, [], (err, data) => {
       if (err) return res.status(500).json(err);
       return res.status(200).json(data);
     });

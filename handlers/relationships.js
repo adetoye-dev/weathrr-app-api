@@ -31,7 +31,7 @@ export const addRelationship = (req, res) => {
     "INSERT INTO relationships (`followerUserId`, `followedUserId`) VALUES (?)";
 
   if (req.user) {
-    const values = [req.user.id, userId];
+    const values = [req.user.userId, userId];
 
     db.query(q, [values], (err, data) => {
       if (err) return res.status(500).json(err);
@@ -61,7 +61,7 @@ export const deleteRelationship = (req, res) => {
     "DELETE FROM relationships WHERE `followerUserId` = ? AND `followedUserId` = ?";
 
   if (req.user) {
-    db.query(q, [req.user.id, userId], (err, data) => {
+    db.query(q, [req.user.userId, userId], (err, data) => {
       if (err) return res.status(500).json(err);
       return res.status(200).json("You unfollowed this user");
     });

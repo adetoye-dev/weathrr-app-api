@@ -5,10 +5,10 @@ export const getSavedPosts = (req, res) => {
   const token = req.header("Authorization")?.split(" ")[1] || "";
   if (!token && !req.user) return res.status(401).json("User not logged in");
 
-  const q = `SELECT p.*, u.id AS userId, name AS userName, profilePic, b.userId as bookmarkId FROM posts AS p JOIN users AS u JOIN bookmarks as b ON (u.id = p.userId) AND (b.postId = p.id) WHERE (b.userId = ?)`;
+  const q = `SELECT p.*, b.userId as bookmarkId FROM posts AS p JOIN bookmarks as b ON (b.postId = p.id) WHERE (b.userId = ?)`;
 
   if (req.user) {
-    db.query(q, [req.user.id], (err, data) => {
+    db.query(q, [req.user.userId], (err, data) => {
       if (err) return res.status(500).json(err);
       return res.status(200).json(data);
     });
@@ -43,7 +43,7 @@ export const addFavorite = (req, res) => {
   const q = "INSERT INTO bookmarks (`userId`, `postId`) VALUES (?)";
 
   if (req.user) {
-    const values = [req.user.id, postId];
+    const values = [req.user.userId, postId];
 
     db.query(q, [values], (err, data) => {
       if (err) return res.status(500).json(err);
@@ -71,7 +71,7 @@ export const deleteFavorite = (req, res) => {
   const q = "DELETE FROM bookmarks WHERE `userId` = ? AND `postId` = ?";
 
   if (req.user) {
-    db.query(q, [req.user.id, postId], (err, data) => {
+    db.query(q, [req.user.userId, postId], (err, data) => {
       if (err) return res.status(500).json(err);
       return res.status(200).json("Post removed from bookmarks");
     });

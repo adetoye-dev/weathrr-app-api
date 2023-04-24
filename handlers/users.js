@@ -29,14 +29,14 @@ export const updateUser = (req, res) => {
 
   if (req.user) {
     const q =
-      "UPDATE `google_users` SET `name` = ?, `profilePic` = ?, `picId` = ?, `city` = ?, `about` = ? WHERE (id = ?)";
+      "UPDATE `google_users` SET `name` = ?, `profilePic` = ?, `picId` = ?, `city` = ?, `about` = ? WHERE (userId = ?)";
     const values = [
       req.body.name,
       req.body.img.url,
       req.body.img.id,
       req.body.city,
       req.body.about,
-      req.user.id,
+      req.user.userId,
     ];
     db.query(q, [...values], (err, data) => {
       if (err) return res.status(500).json(err);
@@ -47,7 +47,7 @@ export const updateUser = (req, res) => {
       if (err) return res.status(403).json("Invalid Token");
 
       const q =
-        "UPDATE `users` SET `name` = ?, `profilePic` = ?, `picId` = ?, `city` = ?, `about` = ? WHERE (id = ?)";
+        "UPDATE `users` SET `name` = ?, `profilePic` = ?, `picId` = ?, `city` = ?, `about` = ? WHERE (userId = ?)";
       const values = [
         req.body.name,
         req.body.img.url,
