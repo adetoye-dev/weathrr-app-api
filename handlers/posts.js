@@ -5,6 +5,25 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+export const fetchPostCreator = (req, res) => {
+  const creatorId = req.body.creatorId;
+  const userChannel = creatorId.split("_")[0];
+
+  let table = "";
+  if (userChannel === "google") {
+    table = "google_users";
+  } else {
+    table = "users";
+  }
+
+  const q = `SELECT name , profilePic FROM ${table} WHERE (userId = ?)`;
+
+  db.query(q, [creatorId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data[0]);
+  });
+};
+
 //show All Posts from all Users
 export const getPosts = (req, res) => {
   const token = req.header("Authorization")?.split(" ")[1] || "";
