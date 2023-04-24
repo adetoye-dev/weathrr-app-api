@@ -25,35 +25,54 @@ export const addRelationship = (req, res) => {
   const userId = req.body.userId;
 
   const token = req.header("Authorization")?.split(" ")[1] || "";
-  if (!token) return res.status(401).json("User not logged in");
+  if (!token && !req.user) return res.status(401).json("User not logged in");
 
-  jwt.verify(token, "secretkey", (err, data) => {
-    if (err) return res.status(403).json("Invalid Token");
-    const q =
-      "INSERT INTO relationships (`followerUserId`, `followedUserId`) VALUES (?)";
-    const values = [data.id, userId];
+  const q =
+    "INSERT INTO relationships (`followerUserId`, `followedUserId`) VALUES (?)";
+
+  if (req.user) {
+    const values = [req.user.userId, userId];
 
     db.query(q, [values], (err, data) => {
       if (err) return res.status(500).json(err);
-      return res.status(200).json("Post added to bookmarks");
+      return res.status(200).json("You followed this user");
     });
-  });
+  } else {
+    jwt.verify(token, "secretkey", (err, data) => {
+      if (err) return res.status(403).json("Invalid Token");
+
+      const values = [data.id, userId];
+
+      db.query(q, [values], (err, data) => {
+        if (err) return res.status(500).json(err);
+        return res.status(200).json("You followed this user");
+      });
+    });
+  }
 };
 
 export const deleteRelationship = (req, res) => {
   const userId = req.query.userId;
 
   const token = req.header("Authorization")?.split(" ")[1] || "";
-  if (!token) return res.status(401).json("User not logged in");
+  if (!token && !req.user) return res.status(401).json("User not logged in");
 
-  jwt.verify(token, "secretkey", (err, data) => {
-    if (err) return res.status(403).json("Invalid Token");
-    const q =
-      "DELETE FROM relationships WHERE `followerUserId` = ? AND `followedUserId` = ?";
+  const q =
+    "DELETE FROM relationships WHERE `followerUserId` = ? AND `followedUserId` = ?";
 
-    db.query(q, [data.id, userId], (err, data) => {
+  if (req.user) {
+    db.query(q, [req.user.userId, userId], (err, data) => {
       if (err) return res.status(500).json(err);
-      return res.status(200).json("Post removed from bookmarks");
+      return res.status(200).json("You unfollowed this user");
     });
-  });
+  } else {
+    jwt.verify(token, "secretkey", (err, data) => {
+      if (err) return res.status(403).json("Invalid Token");
+
+      db.query(q, [data.id, userId], (err, data) => {
+        if (err) return res.status(500).json(err);
+        return res.status(200).json("You unfollowed this user");
+      });
+    });
+  }
 };

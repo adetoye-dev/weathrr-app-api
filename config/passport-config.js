@@ -27,14 +27,15 @@ passport.use(
 
         console.log("This is a new user");
         //CREATE NEW USER
+        const userId = `${profile.provider}_${profile.id}`; //create signed user id
         const q =
-          "INSERT INTO `google_users` (googleId, name, email, profilePic, channel) VALUES (?)";
+          "INSERT INTO `google_users` (googleId, name, email, profilePic, userId) VALUES (?)";
         const values = [
           profile.id,
           profile.displayName,
           profile.email,
           profile.picture,
-          profile.provider,
+          userId,
         ];
         db.query(q, [values], (err, data) => {
           if (err) return res.status(500).json(err);
@@ -56,12 +57,11 @@ passport.serializeUser(function (user, done) {
   process.nextTick(function () {
     done(null, {
       id: user.id,
-      googleId: user.googleId,
       name: user.name,
       profilePic: user.profilePic,
       city: user.city,
       about: user.about,
-      channel: user.channel,
+      userId: user.userId,
     });
   });
 });
