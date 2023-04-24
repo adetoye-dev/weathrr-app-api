@@ -35,7 +35,7 @@ export const addRelationship = (req, res) => {
 
     db.query(q, [values], (err, data) => {
       if (err) return res.status(500).json(err);
-      return res.status(200).json("Post added to bookmarks");
+      return res.status(200).json("You followed this user");
     });
   } else {
     jwt.verify(token, "secretkey", (err, data) => {
@@ -45,7 +45,7 @@ export const addRelationship = (req, res) => {
 
       db.query(q, [values], (err, data) => {
         if (err) return res.status(500).json(err);
-        return res.status(200).json("Post added to bookmarks");
+        return res.status(200).json("You followed this user");
       });
     });
   }
@@ -63,7 +63,7 @@ export const deleteRelationship = (req, res) => {
   if (req.user) {
     db.query(q, [req.user.id, userId], (err, data) => {
       if (err) return res.status(500).json(err);
-      return res.status(200).json("Post removed from bookmarks");
+      return res.status(200).json("You unfollowed this user");
     });
   } else {
     jwt.verify(token, "secretkey", (err, data) => {
@@ -71,7 +71,7 @@ export const deleteRelationship = (req, res) => {
 
       db.query(q, [data.id, userId], (err, data) => {
         if (err) return res.status(500).json(err);
-        return res.status(200).json("Post removed from bookmarks");
+        return res.status(200).json("You unfollowed this user");
       });
     });
   }
