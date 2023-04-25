@@ -16,6 +16,8 @@ const app = express();
 
 dotenv.config();
 
+app.set("trust proxy", 1);
+
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Credentials", true);
   next();
@@ -38,6 +40,8 @@ app.use(
   cookieSession({
     maxAge: 24 * 60 * 60 * 1000,
     keys: [process.env.COOKIE_KEY],
+    sameSite: "none",
+    secure: true,
   })
 );
 
