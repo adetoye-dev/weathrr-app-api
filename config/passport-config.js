@@ -34,8 +34,8 @@ passport.use(
         const values = [
           profile.id,
           profile.displayName,
-          profile.email,
-          profile.picture,
+          profile._json.email,
+          profile._json.picture,
           userId,
         ];
         db.query(q, [values], (err, data) => {
