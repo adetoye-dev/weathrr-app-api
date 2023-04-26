@@ -60,7 +60,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser((id, done) => {
   const q = "SELECT * FROM `google_users` where userId = ?";
-  db.query(q, [profile.id], (err, data) => {
+  db.query(q, [id], (err, data) => {
     if (err) return done(err, null);
     // return res.status(200).json(data);
     const { ...user } = data[0];
