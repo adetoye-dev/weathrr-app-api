@@ -20,9 +20,12 @@ router.get("/google", passport.authenticate("google"));
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    successRedirect: process.env.CLIENT_URL,
     failureRedirect: process.env.CLIENT_URL + "/login",
-  })
+    session: true,
+  }),
+  (req, res) => {
+    res.redirect(process.env.CLIENT_URL);
+  }
 );
 router.get("/google/logout", (req, res) => {
   req.logout();
