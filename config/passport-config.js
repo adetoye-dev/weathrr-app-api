@@ -13,13 +13,14 @@ passport.use(
       scope: ["email", "profile"],
     },
     (request, accessToken, refreshToken, profile, done) => {
+      console.log(profile);
       console.log("Yay! You made it to the callbacks.");
 
       //CHECK IF USER ALREADY EXISTS
       const q = "SELECT * FROM `google_users` where googleId = ?";
       db.query(q, [profile.id], (err, data) => {
         // if (err) return res.status(500).json(err);
-        if (err) return console.log(err);
+        if (err) return done(err, null);
         if (data.length) {
           const { ...user } = data[0];
           return done(null, user);
@@ -38,10 +39,10 @@ passport.use(
           userId,
         ];
         db.query(q, [values], (err, data) => {
-          if (err) return res.status(500).json(err);
+          if (err) return done(err, null);
           const q = "SELECT * FROM `google_users` where googleId = ?";
           db.query(q, [profile.id], (err, data) => {
-            if (err) return res.status(500).json(err);
+            if (err) return done(err, null);
             // return res.status(200).json(data);
             const { ...user } = data[0];
             return done(null, user);
@@ -53,21 +54,17 @@ passport.use(
 );
 
 // Configure Passport authenticated session persistence.
-passport.serializeUser(function (user, done) {
-  process.nextTick(function () {
-    done(null, {
-      id: user.id,
-      name: user.name,
-      profilePic: user.profilePic,
-      city: user.city,
-      about: user.about,
-      userId: user.userId,
-    });
-  });
+passport.serializeUser((user, done) => {
+  return done(null, user.userId);
 });
 
-passport.deserializeUser(function (user, done) {
-  process.nextTick(function () {
+passport.deserializeUser((id, done) => {
+  const q = "SELECT * FROM `google_users` where userId = ?";
+  db.query(q, [profile.id], (err, data) => {
+    if (err) return done(err, null);
+    // return res.status(200).json(data);
+    const { ...user } = data[0];
+    console.log("deserializedUser: ", user);
     return done(null, user);
   });
 });
