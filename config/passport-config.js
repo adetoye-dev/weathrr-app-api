@@ -1,5 +1,5 @@
 import passport from "passport";
-import * as googleAuth from "passport-google-oauth2";
+import * as googleAuth from "passport-google-oauth20";
 const GoogleStrategy = googleAuth.Strategy;
 import { db } from "../connection.js";
 
