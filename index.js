@@ -1,6 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
-import session from "express-session";
+import cookieSession from "cookie-session";
 import cors from "cors";
 import userRoutes from "./routes/users.js";
 import authRoutes from "./routes/auth.js";
@@ -37,15 +37,14 @@ app.use(cookieParser());
 
 // setup cookie session
 app.use(
-  session({
-    secret: "secretcode",
-    resave: true,
-    saveUninitialized: true,
-    cookie: {
-      sameSite: "none",
-      secure: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7, // One Week
-    },
+  cookieSession({
+    name: "session",
+    keys: [process.env.COOKIE_KEY],
+
+    // Cookie Options
+    sameSite: "none",
+    secure: true,
+    maxAge: 1000 * 60 * 60 * 24 * 7, // One Week
   })
 );
 
