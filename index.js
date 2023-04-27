@@ -53,6 +53,12 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+//Increase body parser limits
+app.use(express.json({ limit: "50mb" }));
+app.use(
+  express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 })
+);
+
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
