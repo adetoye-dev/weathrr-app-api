@@ -25,8 +25,6 @@ app.use((req, res, next) => {
 
 app.use(fileUpload());
 
-app.use(express.json());
-
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
@@ -38,7 +36,7 @@ app.use(cookieParser());
 // setup cookie session
 app.use(
   session({
-    secret: "secretcode",
+    secret: process.env.COOKIE_KEY,
     resave: true,
     saveUninitialized: true,
     cookie: {
