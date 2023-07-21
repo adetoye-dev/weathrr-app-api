@@ -76,7 +76,6 @@ export const login = (req, res) => {
 };
 
 export const validateAuth = async (req, res) => {
-  console.log("called validate Auth");
   if (req.user) {
     res.status(200).json({
       success: true,
@@ -117,7 +116,6 @@ export const validateAuth = async (req, res) => {
 };
 
 export const tokenRefresh = async (req, res) => {
-  console.log("tokenRefresh was called");
   try {
     const refreshToken = req.cookies["refreshToken"];
     const payload = jwt.verify(refreshToken, "refresh_key");

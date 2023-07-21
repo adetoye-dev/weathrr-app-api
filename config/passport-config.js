@@ -13,9 +13,6 @@ passport.use(
       scope: ["email", "profile"],
     },
     (request, accessToken, refreshToken, profile, done) => {
-      console.log(profile);
-      console.log("Yay! You made it to the callbacks.");
-
       //CHECK IF USER ALREADY EXISTS
       const q = "SELECT * FROM `google_users` where googleId = ?";
       db.query(q, [profile.id], (err, data) => {
@@ -26,7 +23,6 @@ passport.use(
           return done(null, user);
         }
 
-        console.log("This is a new user");
         //CREATE NEW USER
         const userId = `${profile.provider}_${profile.id}`; //create signed user id
         const q =
@@ -64,7 +60,6 @@ passport.deserializeUser((id, done) => {
     if (err) return done(err, null);
     // return res.status(200).json(data);
     const { ...user } = data[0];
-    console.log("deserializedUser: ", user);
     return done(null, user);
   });
 });

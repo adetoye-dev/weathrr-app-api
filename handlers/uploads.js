@@ -24,7 +24,6 @@ export const uploadPostImage = async (req, res) => {
     });
 
   res.status(200).json({ id: data.public_id, url: data.url });
-  console.log(data);
 };
 
 export async function uploadProfileImage(req, res) {
@@ -41,5 +40,4 @@ export async function uploadProfileImage(req, res) {
     });
 
   res.status(200).json({ id: data.public_id, url: data.secure_url });
-  console.log(data);
 }

@@ -7,10 +7,8 @@ export const getUser = (req, res) => {
 
   let table = "";
   if (userChannel === "google") {
-    console.log("google table ran");
     table = "google_users";
   } else {
-    console.log("native table ran");
     table = "users";
   }
 
